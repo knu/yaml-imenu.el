@@ -11,6 +11,22 @@ key names in the dot-separated path form like `jobs.build.docker` and
 No configuration is needed.  It automatically registers an alternative
 index generator via `yaml-mode-hook`.
 
+## Usage
+
+A precise YAML node path list this package provides is especially
+useful when dealing with a large YAML file.
+
+With `which-func-mode` enabled, you can always see at a glance where
+you are.  In this example, the "YAML path" is shown in the header line
+instead of the mode line by customizing `header-line-format`.
+
+![With which-func-mode](./images/which-func.png "With which-func-mode")
+
+Using `helm-imenu`, it is extremely easy to navigate to anywhere you
+want to go.
+
+![With helm-imenu](./images/helm-imenu.png "With helm-imenu")
+
 ## Author
 
 Copyright (c) 2018 Akinori MUSHA.
