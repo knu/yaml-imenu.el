@@ -86,6 +86,7 @@
                             (point))
                         (yaml-imenu--json-to-index value)))))
 
+;;;###autoload
 (defun yaml-imenu-activate ()
   "Set the buffer local `imenu-create-index-function' to `yaml-imenu-create-index'."
   (setq imenu-create-index-function 'yaml-imenu-create-index))
