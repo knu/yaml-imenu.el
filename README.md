@@ -6,6 +6,17 @@ key names in the dot-separated path form like `jobs.build.docker` and
 `ja.activerecord.attributes.user.nickname`.  It shines best with
 `which-function-mode` enabled.
 
+## Requirements
+
+This package depends on Ruby for parsing YAML documents to obtain
+location information of each node.  Ruby >=2.5 works out of the box;
+if you have an older version of Ruby, run the following command to
+install the latest version of `psych`, the YAML parser:
+
+```console
+% gem install psych --user
+```
+
 ## Configuration
 
 No configuration is needed.  It automatically registers an alternative
