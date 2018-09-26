@@ -1,4 +1,4 @@
-;;; yaml-imenu.el --- Enhancement for the imenu support in yaml-mode.
+;;; yaml-imenu.el --- Enhancement of the imenu support in yaml-mode.
 
 ;; Copyright (c) 2018 Akinori MUSHA
 ;;
@@ -28,7 +28,7 @@
 ;; Author: Akinori MUSHA <knu@iDaemons.org>
 ;; URL: https://github.com/knu/yaml-imenu.el
 ;; Created: 25 Sep 2018
-;; Version: 0.1.0
+;; Version: 1.0.0
 ;; Package-Requires: ((yaml-mode "0"))
 ;; Keywords: outlining, convenience, imenu
 
