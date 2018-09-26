@@ -29,7 +29,7 @@
 ;; URL: https://github.com/knu/yaml-imenu.el
 ;; Created: 25 Sep 2018
 ;; Version: 1.0.0
-;; Package-Requires: ((yaml-mode "0"))
+;; Package-Requires: ((emacs "24.4") (yaml-mode "0"))
 ;; Keywords: outlining, convenience, imenu
 
 ;;; Commentary:
