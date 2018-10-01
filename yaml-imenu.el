@@ -49,6 +49,9 @@
 ;;
 ;;   % gem install psych --user
 ;;
+;; The parser only parses a document without evaluating it, so there
+;; should be no security concerns.
+;;
 ;;; Configuration:
 ;;
 ;; Add the following line to your init file:
