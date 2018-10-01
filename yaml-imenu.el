@@ -48,6 +48,12 @@
 ;; install the latest version of `psych', the YAML parser:
 ;;
 ;;   % gem install psych --user
+;;
+;;; Configuration:
+;;
+;; Add the following line to your init file:
+;;
+;;   (yaml-imenu-enable)
 
 ;;; Code:
 
@@ -108,9 +114,18 @@
   (setq imenu-create-index-function 'yaml-imenu-create-index))
 
 ;;;###autoload
-(with-eval-after-load 'yaml-mode
+(defun yaml-imenu-enable ()
+  "Globally enable `yaml-imenu-create-index' in yaml-mode by adding `yaml-imenu-activate' to `yaml-mode-hook'."
+  (interactive)
   (remove-hook 'yaml-mode-hook 'yaml-set-imenu-generic-expression)
-  (add-hook 'yaml-mode-hook 'yaml-imenu-activate))
+  (add-hook 'yaml-mode-hook 'yaml-imenu-activate t))
+
+;;;###autoload
+(defun yaml-imenu-disable ()
+  "Globally disable `yaml-imenu-create-index' in yaml-mode."
+  (interactive)
+  (add-hook 'yaml-mode-hook 'yaml-set-imenu-generic-expression)
+  (remove-hook 'yaml-mode-hook 'yaml-imenu-activate))
 
 (provide 'yaml-imenu)
 ;;; yaml-imenu.el ends here

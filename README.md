@@ -19,8 +19,11 @@ install the latest version of `psych`, the YAML parser:
 
 ## Configuration
 
-No configuration is needed.  It automatically registers an alternative
-index generator via `yaml-mode-hook`.
+Add the following line to your init file:
+
+```elisp
+(yaml-imenu-enable)
+```
 
 ## Usage
 
