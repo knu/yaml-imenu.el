@@ -100,7 +100,7 @@
     (widen)
     (goto-char (point-min))
     (let ((currlinum 1))
-      (loop for (key . value) in alist
+      (cl-loop for (key . value) in alist
             collect (cons (symbol-name key)
                           (if (numberp value)
                               (let ((diff (- value currlinum)))
