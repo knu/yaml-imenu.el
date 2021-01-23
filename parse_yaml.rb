@@ -1,3 +1,5 @@
+#!/usr/bin/env ruby
+
 require 'yaml'
 require 'json'
 
@@ -16,7 +18,7 @@ end
 def parse(node, current_path = nil)
   case node
   when Psych::Nodes::Scalar, Psych::Nodes::Alias
-    nil
+  { current_path => node.start_line + 1 } if current_path
   when Psych::Nodes::Mapping
     initial =
       if current_path
