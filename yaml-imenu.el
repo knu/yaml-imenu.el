@@ -29,7 +29,7 @@
 ;; URL: https://github.com/knu/yaml-imenu.el
 ;; Created: 25 Sep 2018
 ;; Version: 1.0.2
-;; Package-Requires: ((emacs "24.4") (yaml-mode "0"))
+;; Package-Requires: ((emacs "24.4") (yaml-mode "0") (cl-macs "0"))
 ;; Keywords: outlining, convenience, imenu
 
 ;;; Commentary:
@@ -83,16 +83,17 @@
          (json-array-type 'list))
      (json-read-from-string
       (with-output-to-string
-        (shell-command-on-region
-         (point-min)
-         (point-max)
-         (mapconcat
-          'shell-quote-argument
-          (list
-           "ruby"
-           (expand-file-name "parse_yaml.rb" (yaml-imenu-source-directory)))
-          " ")
-         standard-output))))))
+        (cl-letf (((symbol-function 'display-message-or-buffer) #'ignore))
+          (shell-command-on-region
+           (point-min)
+           (point-max)
+           (mapconcat
+            'shell-quote-argument
+            (list
+             "ruby"
+             (expand-file-name "parse_yaml.rb" (yaml-imenu-source-directory)))
+            " ")
+           standard-output)))))))
 
 (defun yaml-imenu--json-to-index (alist)
   "Reformat the JSON representation ALIST into an imenu index."
