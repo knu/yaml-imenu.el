@@ -82,19 +82,20 @@
    (let ((json-object-type 'alist)
          (json-array-type 'list))
      (json-read-from-string
-      (with-output-to-string
-        (with-current-buffer
-            standard-output
-          (shell-command-on-region
-           (point-min)
-           (point-max)
-           (mapconcat
-            'shell-quote-argument
-            (list
-             "ruby"
-             (expand-file-name "parse_yaml.rb" (yaml-imenu-source-directory)))
-            " ")
-           t)))))))
+      ;; suppress the effect of display-message-or-buffer
+      (save-window-excursion
+        (let ((max-mini-window-height 0.0))
+          (with-output-to-string
+            (shell-command-on-region
+             (point-min)
+             (point-max)
+             (mapconcat
+              'shell-quote-argument
+              (list
+               "ruby"
+               (expand-file-name "parse_yaml.rb" (yaml-imenu-source-directory)))
+              " ")
+             standard-output))))))))
 
 (defun yaml-imenu--json-to-index (alist)
   "Reformat the JSON representation ALIST into an imenu index."
