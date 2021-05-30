@@ -73,7 +73,7 @@ want to go.
 
 ## Author
 
-Copyright (c) 2018 Akinori MUSHA.
+Copyright (c) 2018-2021 Akinori MUSHA.
 
 Licensed under the 2-clause BSD license.  See `LICENSE.txt` for
 details.
