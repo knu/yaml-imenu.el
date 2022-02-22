@@ -1,4 +1,4 @@
-;;; yaml-imenu.el --- Enhancement of the imenu support in yaml-mode.
+;;; yaml-imenu.el --- Enhancement of the imenu support in yaml-mode.  -*- lexical-binding: t; -*-
 
 ;; Copyright (c) 2018-2021 Akinori MUSHA
 ;;
@@ -59,21 +59,20 @@
 ;;   (yaml-imenu-enable)
 
 ;;; Code:
-
+(eval-when-compile (require 'cl-lib))
 (require 'yaml-mode)
 (require 'json)
 
-(defvar yaml-imenu-source-directory nil
-  "Directory of yaml-imenu source files.")
-
-(defun yaml-imenu-source-directory ()
-  "Return the source directory of the yaml-imenu package."
-  (or yaml-imenu-source-directory
-      (setq yaml-imenu-source-directory
-            (file-name-directory
-             (find-lisp-object-file-name
-              'yaml-imenu-source-directory
-              (symbol-function 'yaml-imenu-source-directory))))))
+(defvar yaml-imenu-parser
+  (expand-file-name
+   "parse_yaml.rb"
+   (file-name-directory
+    (cond
+     (load-in-progress load-file-name)
+     ((and (boundp 'byte-compile-current-file) byte-compile-current-file)
+      byte-compile-current-file)
+     (t (buffer-file-name)))))
+  "Yaml-imenu parser.")
 
 ;;;###autoload
 (defun yaml-imenu-create-index ()
@@ -91,10 +90,7 @@
              (point-max)
              (mapconcat
               'shell-quote-argument
-              (list
-               "ruby"
-               (expand-file-name "parse_yaml.rb" (yaml-imenu-source-directory)))
-              " ")
+              (list "ruby" yaml-imenu-parser) " ")
              standard-output))))))))
 
 (defun yaml-imenu--json-to-index (alist)
@@ -103,35 +99,30 @@
     (widen)
     (goto-char (point-min))
     (let ((currlinum 1))
-      (loop for (key . value) in alist
-            collect (cons (symbol-name key)
-                          (if (numberp value)
-                              (let ((diff (- value currlinum)))
-                                (if (eq selective-display t)
-	                            (re-search-forward "[\n\C-m]" nil 'end diff)
-                                  (forward-line diff))
-                                (setq currlinum value)
-                                (point))
-                            (yaml-imenu--json-to-index value)))))))
+      (cl-loop for (key . value) in alist
+               collect (cons (symbol-name key)
+                             (if (numberp value)
+                                 (let ((diff (- value currlinum)))
+                                   (if (eq selective-display t)
+	                               (re-search-forward "[\n\C-m]" nil 'end diff)
+                                     (forward-line diff))
+                                   (setq currlinum value)
+                                   (point))
+                               (yaml-imenu--json-to-index value)))))))
+
+(defvar imenu--index-alist)
 
 ;;;###autoload
-(defun yaml-imenu-activate ()
-  "Set the buffer local `imenu-create-index-function' to `yaml-imenu-create-index'."
-  (setq imenu-create-index-function 'yaml-imenu-create-index))
-
-;;;###autoload
-(defun yaml-imenu-enable ()
-  "Globally enable `yaml-imenu-create-index' in yaml-mode by adding `yaml-imenu-activate' to `yaml-mode-hook'."
-  (interactive)
-  (remove-hook 'yaml-mode-hook 'yaml-set-imenu-generic-expression)
-  (add-hook 'yaml-mode-hook 'yaml-imenu-activate t))
-
-;;;###autoload
-(defun yaml-imenu-disable ()
-  "Globally disable `yaml-imenu-create-index' in yaml-mode."
-  (interactive)
-  (add-hook 'yaml-mode-hook 'yaml-set-imenu-generic-expression)
-  (remove-hook 'yaml-mode-hook 'yaml-imenu-activate))
+(define-minor-mode yaml-imenu-mode
+  "Enable `yaml-imenu' support."
+  :lighter nil
+  (if yaml-imenu-mode
+      (progn
+        (setq imenu--index-alist nil)
+        (add-function :before-until (local 'imenu-create-index-function)
+                      #'yaml-imenu-create-index))
+    (remove-function (local 'imenu-create-index-function)
+                     #'yaml-imenu-create-index)))
 
 (provide 'yaml-imenu)
 ;;; yaml-imenu.el ends here
