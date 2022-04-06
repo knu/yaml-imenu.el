@@ -103,16 +103,16 @@
     (widen)
     (goto-char (point-min))
     (let ((currlinum 1))
-      (loop for (key . value) in alist
-            collect (cons (symbol-name key)
-                          (if (numberp value)
-                              (let ((diff (- value currlinum)))
-                                (if (eq selective-display t)
-	                            (re-search-forward "[\n\C-m]" nil 'end diff)
-                                  (forward-line diff))
-                                (setq currlinum value)
-                                (point))
-                            (yaml-imenu--json-to-index value)))))))
+      (cl-loop for (key . value) in alist
+               collect (cons (symbol-name key)
+                             (if (numberp value)
+                                 (let ((diff (- value currlinum)))
+                                   (if (eq selective-display t)
+	                               (re-search-forward "[\n\C-m]" nil 'end diff)
+                                     (forward-line diff))
+                                   (setq currlinum value)
+                                   (point))
+                               (yaml-imenu--json-to-index value)))))))
 
 ;;;###autoload
 (defun yaml-imenu-activate ()
