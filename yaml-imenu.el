@@ -1,6 +1,6 @@
 ;;; yaml-imenu.el --- Enhancement of the imenu support in yaml-mode.
 
-;; Copyright (c) 2018-2021 Akinori MUSHA
+;; Copyright (c) 2018-2025 Akinori MUSHA
 ;;
 ;; All rights reserved.
 ;;
@@ -29,7 +29,7 @@
 ;; URL: https://github.com/knu/yaml-imenu.el
 ;; Created: 25 Sep 2018
 ;; Version: 1.0.3
-;; Package-Requires: ((emacs "24.4") (yaml-mode "0"))
+;; Package-Requires: ((emacs "27.1") (yaml-mode "0"))
 ;; Keywords: outlining, convenience, imenu
 
 ;;; Commentary:
@@ -60,8 +60,13 @@
 
 ;;; Code:
 
+(eval-when-compile
+  (require 'cl-lib))
+
 (require 'yaml-mode)
 (require 'json)
+(require 'add-log)
+(require 'which-func)
 
 (defvar yaml-imenu-source-directory nil
   "Directory of yaml-imenu source files.")
@@ -117,11 +122,12 @@
 ;;;###autoload
 (defun yaml-imenu-activate ()
   "Set the buffer local `imenu-create-index-function' to `yaml-imenu-create-index'."
-  (setq imenu-create-index-function 'yaml-imenu-create-index))
+  (setq imenu-create-index-function 'yaml-imenu-create-index)
+  (setq-local add-log-current-defun-function 'add-log-current-defun-from-imenu-index))
 
 ;;;###autoload
 (defun yaml-imenu-enable ()
-  "Globally enable `yaml-imenu-create-index' in yaml-mode by adding `yaml-imenu-activate' to `yaml-mode-hook'."
+  "Globally enable `yaml-imenu-create-index' in yaml-mode."
   (interactive)
   (remove-hook 'yaml-mode-hook 'yaml-set-imenu-generic-expression)
   (add-hook 'yaml-mode-hook 'yaml-imenu-activate t))
@@ -132,6 +138,18 @@
   (interactive)
   (add-hook 'yaml-mode-hook 'yaml-set-imenu-generic-expression)
   (remove-hook 'yaml-mode-hook 'yaml-imenu-activate))
+
+(defun add-log-current-defun-from-imenu-index ()
+  "Identify the name of the current defun from imenu index.
+
+This makes use of the fallback logic in `which-function' by
+calling it temporarily with `which-func-functions' and
+`add-log-current-defun' disabled."
+  (let ((which-func-functions nil)
+        (which-func-cleanup-function nil)
+        (add-log-current-defun-function nil))
+    (cl-letf (((symbol-function 'add-log-current-defun) (lambda () nil)))
+      (which-function))))
 
 (provide 'yaml-imenu)
 ;;; yaml-imenu.el ends here
