@@ -28,7 +28,7 @@
 ;; Author: Akinori MUSHA <knu@iDaemons.org>
 ;; URL: https://github.com/knu/yaml-imenu.el
 ;; Created: 25 Sep 2018
-;; Version: 1.0.3
+;; Version: 1.1.0
 ;; Package-Requires: ((emacs "27.1") (yaml-mode "0"))
 ;; Keywords: outlining, convenience, imenu
 
